@@ -1,3 +1,5 @@
+import { BitConverter } from "./BitConverter.ts";
+import { ChecksumHelper } from "./ChecksumHelper.ts";
 
 export class Note
 {
@@ -27,17 +29,24 @@ export class Note
   /** Calculated checksum of note */
   public checksum: string = "";
 
-  constructor(newNoteTitle: string = "", newNoteText: string = "", creationTime: number = Math.floor(Date.now() / 1000))
+  private constructor(creationTime: number)
   {
     this.creationTime = creationTime;
-    this.UpdateNote(newNoteTitle, newNoteText, creationTime);
+  }
+
+  public static async Create(newNoteTitle: string = "", newNoteText: string = "", creationTime: number = Math.floor(Date.now() / 1000)): Promise<Note>
+  {
+    const returnValue: Note = new Note(creationTime);
+    await returnValue.UpdateNote(newNoteTitle, newNoteText, creationTime);
+    return returnValue;
   }
   
-  public UpdateNote(updatedNoteTitle: string, updatedNoteText: string, modificationTime: number = Math.floor(Date.now() / 1000)): void
+  public async UpdateNote(updatedNoteTitle: string, updatedNoteText: string, modificationTime: number = Math.floor(Date.now() / 1000)): Promise<void>
   {
     this.noteTitle = new TextEncoder().encode(updatedNoteTitle);
     this.noteText = new TextEncoder().encode(updatedNoteText);
     this.modificationTime = modificationTime;
+    this.CalculateAndUpdateChecksum();
   }
 
   public GetNoteTitle(): string
@@ -55,8 +64,18 @@ export class Note
     return this.checksum;
   }
 
-  private CalculateAndUpdateChecksum(): void
+  public async CheckIfChecksumMatchesContent(): Promise<boolean>
   {
+    return this.checksum === await this.CalculateHexChecksum();
+  }
 
+  private async CalculateHexChecksum(): Promise<string>
+  {
+    return await ChecksumHelper.CalculateHexChecksum(new Array(this.noteTitle, this.noteText, BitConverter.GetBytes(this.creationTime), BitConverter.GetBytes(this.modificationTime)));
+  }
+
+  private async CalculateAndUpdateChecksum(): Promise<void>
+  {
+    this.checksum = await this.CalculateHexChecksum();
   }
 }

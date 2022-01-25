@@ -1,10 +1,10 @@
 import { assert, assertEquals, assertExists } from "https://deno.land/std@0.119.0/testing/asserts.ts";
 import { Note } from "../src/Note.ts";
 
-Deno.test("Constructor test", () => {
+Deno.test("Constructor test", async () => {
     // Arrange
-    const note1: Note = new Note();
-	const note2: Note = new Note("Some topic here", "Some text here, yes.");
+    const note1: Note = await Note.Create();
+	const note2: Note = await Note.Create("Some topic here", "Some text here, yes.");
 
     // Act
     
@@ -13,11 +13,11 @@ Deno.test("Constructor test", () => {
     assertExists(note2);
 });
 
-Deno.test("Get values test", () => {
+Deno.test("Get values test", async () => {
     // Arrange
     const title: string = "My shopping list";
 	const text: string = "Cheese, cucumber, mayo, lettuce, tomato ...";
-    const note: Note = new Note(title, text);
+    const note: Note = await Note.Create(title, text);
 
     // Act
     
