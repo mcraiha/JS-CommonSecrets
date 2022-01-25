@@ -26,6 +26,6 @@ export class ChecksumHelper
 
   private static ByteArrayChecksumToHexString(byteArray: Uint8Array): string
   {
-    return Array.from(byteArray, i => i.toString(16).padStart(2, "0")).join("");
+    return Array.from(byteArray, i => i.toString(16).padStart(2, "0")).join("").toUpperCase();
   }
 }

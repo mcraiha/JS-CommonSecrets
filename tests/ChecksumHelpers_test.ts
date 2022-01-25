@@ -8,6 +8,8 @@ Deno.test("Calculate Hex Checksum Test", async () => {
   const byteArray2: Uint8Array = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);
   const byteArray3: Uint8Array = new Uint8Array([]);
 
+  const expectedHex: string = "66840DDA154E8A113C31DD0AD32F7F3A366A80E8136979D8F5A101D3D29D6F72";
+
   // Act
   const hex1: string = await ChecksumHelper.CalculateHexChecksum(new Array<Uint8Array>(byteArray1));
   const hex2: string = await ChecksumHelper.CalculateHexChecksum(new Array<Uint8Array>(byteArray2));
@@ -22,6 +24,7 @@ Deno.test("Calculate Hex Checksum Test", async () => {
 
   assertEquals(hex1.length, 32 * 2, "Every byte should convert to two Hex chars");
 
+  assertEquals<string>(hex1, expectedHex);
   assertEquals<string>(hex1, hex2);
 
   assertNotEquals<string>(hex2, hex3);
