@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertExists, assertRejects } from "https://deno.land/std@0.119.0/testing/asserts.ts";
+import { assert, assertEquals, assertExists, assertRejects } from "https://deno.land/std@0.122.0/testing/asserts.ts";
 import { KeyDerivationFunctionEntry, KeyDerivationPrf } from "../src/KeyDerivationFunctionEntry.ts";
 
 Deno.test("Constructor test", async () => {

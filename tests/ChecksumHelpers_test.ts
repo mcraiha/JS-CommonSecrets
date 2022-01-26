@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertNotEquals, assertExists, assertArrayIncludes } from "https://deno.land/std@0.119.0/testing/asserts.ts";
+import { assert, assertEquals, assertNotEquals, assertExists, assertArrayIncludes } from "https://deno.land/std@0.122.0/testing/asserts.ts";
 import { ChecksumHelper } from "../src/ChecksumHelper.ts";
 
 // CalculateHexChecksumTest()
