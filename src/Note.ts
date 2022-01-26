@@ -59,6 +59,8 @@ export class Note
     return new TextDecoder("utf-8").decode(this.noteText);
   }
 
+  //#region Checksum
+
   public GetChecksumAsHex(): string
   {
     return this.checksum;
@@ -78,4 +80,6 @@ export class Note
   {
     this.checksum = await this.CalculateHexChecksum();
   }
+
+  //#endregion
 }

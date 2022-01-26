@@ -64,6 +64,8 @@ export class FileEntry
     return this.fileContent.length;
   }
 
+  //#region Checksum
+
   public GetChecksumAsHex(): string
   {
     return this.checksum;
@@ -83,4 +85,6 @@ export class FileEntry
   {
     this.checksum = await this.CalculateHexChecksum();
   }
+
+  //#endregion
 }
