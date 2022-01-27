@@ -131,3 +131,19 @@ Deno.test("Create HMACSHA512 KeyDerivation Function Entry test", async () => {
   assertEquals(derivedPassword.length, 64, "There should be 32 bytes generated");
   assertEquals(CalculateEntropy.ShannonEntropy(derivedPassword) > 4.0, true, "There should be enought entropy");
 });
+
+Deno.test("Checksum Survives Roundtrip test", async () => {
+  // Arrange
+  const salt: Uint8Array = new TextEncoder().encode("saltKEYbcTcXHCBxtjD");
+  const kdfe1: KeyDerivationFunctionEntry = await KeyDerivationFunctionEntry.CreateWithCustomParameters(KeyDerivationPrf.HMACSHA512, salt, 100000, 64, "master_key" );
+
+  // Act
+  const checksum1: string = kdfe1.GetChecksumAsHex();
+  const json: string = JSON.stringify(kdfe1);
+  const kdfe2: KeyDerivationFunctionEntry = JSON.parse(json);
+
+  // Assert
+  assertEquals(checksum1.length, 64, `Checksum should be 64 characters`);
+  assertEquals(kdfe2.checksum, checksum1, "Checksums should match");
+});
+
