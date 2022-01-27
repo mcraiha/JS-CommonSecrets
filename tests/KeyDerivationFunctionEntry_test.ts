@@ -1,5 +1,6 @@
 import { assert, assertEquals, assertExists, assertRejects } from "https://deno.land/std@0.122.0/testing/asserts.ts";
 import { KeyDerivationFunctionEntry, KeyDerivationPrf } from "../src/KeyDerivationFunctionEntry.ts";
+import { CalculateEntropy } from "./ComparisonHelper.ts";
 
 Deno.test("Constructor test", async () => {
   // Arrange
@@ -114,5 +115,19 @@ Deno.test("Create HMACSHA256 KeyDerivation Function Entry test", async () => {
   // Assert
   assertEquals(kdfe.iterations > KeyDerivationFunctionEntry.iterationsMin, true, `There should be at least ${KeyDerivationFunctionEntry.iterationsMin} iterations`);
   assertEquals(derivedPassword.length, 32, "There should be 32 bytes generated");
+  assertEquals(CalculateEntropy.ShannonEntropy(derivedPassword) > 4.0, true, "There should be enought entropy");
+});
 
+Deno.test("Create HMACSHA512 KeyDerivation Function Entry test", async () => {
+  // Arrange
+  const kdfe: KeyDerivationFunctionEntry = await KeyDerivationFunctionEntry.CreateHMACSHA512KeyDerivationFunctionEntry("does not matter anymore");
+	const password: string = "tooeasypart2";
+
+  // Act
+  const derivedPassword: Uint8Array = await kdfe.GeneratePasswordBytes(password);
+
+  // Assert
+  assertEquals(kdfe.iterations > KeyDerivationFunctionEntry.iterationsMin, true, `There should be at least ${KeyDerivationFunctionEntry.iterationsMin} iterations`);
+  assertEquals(derivedPassword.length, 64, "There should be 32 bytes generated");
+  assertEquals(CalculateEntropy.ShannonEntropy(derivedPassword) > 4.0, true, "There should be enought entropy");
 });
