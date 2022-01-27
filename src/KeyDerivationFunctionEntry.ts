@@ -92,6 +92,33 @@ export class KeyDerivationFunctionEntry
     this.keyIdentifier = new TextEncoder().encode(id);
   }
 
+  public async GeneratePasswordBytes(regularPassword: string): Promise<Uint8Array>
+  {
+    const pseudorandomFunctionString: keyof typeof KeyDerivationPrf = this.pseudorandomFunction as keyof typeof KeyDerivationPrf;
+    const prf = KeyDerivationPrf[pseudorandomFunctionString];
+
+    if (prf === KeyDerivationPrf.HMACSHA1)
+    {
+      throw Error("prf cannot be SHA1 for security reasons!");
+    }
+
+    const useSHA256: boolean = prf === KeyDerivationPrf.HMACSHA256;
+
+    const pwKey = await crypto.subtle.importKey('raw', new TextEncoder().encode(regularPassword), 'PBKDF2', false, ['deriveBits']);
+    const params = { name: 'PBKDF2', hash: useSHA256 ? 'SHA-256' : 'SHA-512', salt: this.salt, iterations: this.iterations };
+    const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, this.derivedKeyLengthInBytes * 8);
+    return new Uint8Array(keyBuffer);
+  }
+
+  /**
+   * Get key identifier
+   * @returns {string} Key identifier 
+   */
+  public GetKeyIdentifier(): string
+  {
+    return new TextDecoder().decode(this.keyIdentifier);
+  }
+
   //#region Checksum
 
   /**
@@ -144,7 +171,7 @@ export class KeyDerivationFunctionEntry
 
     const fourBytes: Uint8Array = new Uint8Array(4);
     crypto.getRandomValues(fourBytes);
-    iterationsToDo += (new DataView(fourBytes).getInt32(0, true)) % 4096;
+    iterationsToDo += (new DataView(fourBytes.buffer).getInt32(0, true)) % 4096;
 
     const neededBytes = 32;
     const returnValue: KeyDerivationFunctionEntry = new KeyDerivationFunctionEntry(KeyDerivationPrf.HMACSHA256, salt, iterationsToDo, neededBytes, id);
@@ -165,7 +192,7 @@ export class KeyDerivationFunctionEntry
 
     const fourBytes: Uint8Array = new Uint8Array(4);
     crypto.getRandomValues(fourBytes);
-    iterationsToDo += (new DataView(fourBytes).getInt32(0, true)) % 4096;
+    iterationsToDo += (new DataView(fourBytes.buffer).getInt32(0, true)) % 4096;
 
     const neededBytes = 64;
     const returnValue: KeyDerivationFunctionEntry = new KeyDerivationFunctionEntry(KeyDerivationPrf.HMACSHA512, salt, iterationsToDo, neededBytes, id);
