@@ -1,15 +1,33 @@
 import { BitConverter } from "./BitConverter.ts";
 import { ChecksumHelper } from "./ChecksumHelper.ts";
 
+/**
+ * KDF (Key Derivation Function) Algorithm
+ */
 export enum KDFAlgorithm
 {
+  /**
+   * Password-Based Key Derivation Function 2
+   */
   PBKDF2 = 0,
 }
 
+/**
+ * Key Derivation pseudorandom function
+ */
 export enum KeyDerivationPrf
 {
+  /**
+   * Hash-based Message Authentication Code (HMAC) using the SHA1 hash function (deprecated)
+   */
   HMACSHA1 = 0,
+  /**
+   * Hash-based Message Authentication Code (HMAC) using the SHA256 hash function
+   */
   HMACSHA256 = 1,
+  /**
+   * Hash-based Message Authentication Code (HMAC) using the SHA512 hash function
+   */
   HMACSHA512 = 2,
 }
 
@@ -92,6 +110,11 @@ export class KeyDerivationFunctionEntry
     this.keyIdentifier = new TextEncoder().encode(id);
   }
 
+  /**
+   * Generate password bytes
+   * @param regularPassword {string} Password string
+   * @returns {Uint8Array} Derivated password as bytes
+   */
   public async GeneratePasswordBytes(regularPassword: string): Promise<Uint8Array>
   {
     const pseudorandomFunctionString: keyof typeof KeyDerivationPrf = this.pseudorandomFunction as keyof typeof KeyDerivationPrf;
@@ -122,7 +145,7 @@ export class KeyDerivationFunctionEntry
   //#region Checksum
 
   /**
-   * 
+   * Get checksum as hex string
    * @returns Checksum as hex string
    */
   public GetChecksumAsHex(): string
