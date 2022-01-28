@@ -44,3 +44,33 @@ Deno.test("Generate new test", async () => {
   assertNotEquals(content, outputAES);
   assertEquals(content, decryptedAES);
 });
+
+Deno.test("Generate new test", async () => {
+  // Arrange
+  const initialCounter1: Uint8Array = new Uint8Array([0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff]);
+  const initialCounter2: Uint8Array = new Uint8Array([0xf1, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff]);
+  
+  const settingsAES_CTR1: SettingsAES_CTR = new SettingsAES_CTR(initialCounter1);
+  const settingsAES_CTR2: SettingsAES_CTR = new SettingsAES_CTR(initialCounter2);
+
+  const skaAES_CTR1: SymmetricKeyAlgorithm = new SymmetricKeyAlgorithm(SymmetricEncryptionAlgorithm.AES_CTR, 128, settingsAES_CTR1);
+  const skaAES_CTR2: SymmetricKeyAlgorithm = new SymmetricKeyAlgorithm(SymmetricEncryptionAlgorithm.AES_CTR, 128, settingsAES_CTR1);
+  const skaAES_CTR3: SymmetricKeyAlgorithm = new SymmetricKeyAlgorithm(SymmetricEncryptionAlgorithm.AES_CTR, 256, settingsAES_CTR1);
+  const skaAES_CTR4: SymmetricKeyAlgorithm = new SymmetricKeyAlgorithm(SymmetricEncryptionAlgorithm.AES_CTR, 128, settingsAES_CTR2);
+
+  // Act
+  const skaAES_CTR1bytes: Uint8Array = skaAES_CTR1.GetSettingsAsBytes();
+  const skaAES_CTR2bytes: Uint8Array = skaAES_CTR2.GetSettingsAsBytes();
+  const skaAES_CTR3bytes: Uint8Array = skaAES_CTR3.GetSettingsAsBytes();
+  const skaAES_CTR4bytes: Uint8Array = skaAES_CTR4.GetSettingsAsBytes();
+
+  // Assert
+  assertExists(skaAES_CTR1bytes);
+  assertExists(skaAES_CTR2bytes);
+  assertExists(skaAES_CTR3bytes);
+  assertExists(skaAES_CTR4bytes);
+
+  assertEquals<Uint8Array>(skaAES_CTR1bytes, skaAES_CTR2bytes);
+  assertNotEquals(skaAES_CTR1bytes, skaAES_CTR3bytes);
+  assertNotEquals(skaAES_CTR1bytes, skaAES_CTR4bytes);
+});

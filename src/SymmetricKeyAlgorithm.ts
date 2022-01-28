@@ -112,6 +112,24 @@ export class SymmetricKeyAlgorithm
   }
 
   /**
+   * Get settings as byte array
+   * @returns Byte array
+   */
+  public GetSettingsAsBytes(): Uint8Array
+  {
+    if (this.algorithm === SymmetricEncryptionAlgorithm.AES_CTR.toString())
+    {
+      return ChecksumHelper.JoinByteArrays(new Array(new TextEncoder().encode(this.algorithm), BitConverter.Get4BytesFromInt(this.keySizeInBits), this.settingsAES_CTR!.GetSettingsAsBytes()));
+    }
+    else if (this.algorithm === SymmetricEncryptionAlgorithm.ChaCha20.toString())
+    {
+
+    }
+
+    throw Error("Not Implemented");
+  }
+
+  /**
    * Generate new SymmetricKeyAlgorithm, you should use this instead of constructor
    * @param symmetricEncryptionAlgorithm Wanted Symmetric encryption algorithm
    * @returns SymmetricKeyAlgorithm
@@ -220,7 +238,7 @@ export class SettingsChaCha20
    */
   public GetSettingsAsBytes(): Uint8Array
   {
-    return ChecksumHelper.JoinByteArrays(new Array(this.nonce, BitConverter.GetBytes(this.counter)));
+    return ChecksumHelper.JoinByteArrays(new Array(this.nonce, BitConverter.Get4BytesFromUInt(this.counter)));
   }
 
   /**
