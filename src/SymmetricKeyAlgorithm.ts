@@ -85,7 +85,7 @@ export class SymmetricKeyAlgorithm
         },
         cryptoKey,
         bytesToEncrypt);
-        
+
       returnArray = new Uint8Array(encryptedArray);
     }
     else if (this.algorithm === SymmetricEncryptionAlgorithm.ChaCha20.toString())
@@ -111,6 +111,11 @@ export class SymmetricKeyAlgorithm
     return await this.EncryptBytes(bytesToDecrypt, key);
   }
 
+  /**
+   * Generate new SymmetricKeyAlgorithm, you should use this instead of constructor
+   * @param symmetricEncryptionAlgorithm Wanted Symmetric encryption algorithm
+   * @returns SymmetricKeyAlgorithm
+   */
   public static GenerateNew(symmetricEncryptionAlgorithm: SymmetricEncryptionAlgorithm): SymmetricKeyAlgorithm
   {
     return new SymmetricKeyAlgorithm(symmetricEncryptionAlgorithm, 256, (symmetricEncryptionAlgorithm === SymmetricEncryptionAlgorithm.AES_CTR ) ? SettingsAES_CTR.CreateWithCryptographicRandomNumbers() : SettingsChaCha20.CreateWithCryptographicRandomNumbers() );
