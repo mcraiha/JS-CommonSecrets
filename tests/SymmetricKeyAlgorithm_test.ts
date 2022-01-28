@@ -74,3 +74,22 @@ Deno.test("SymmetricKeyAlgorithm get as bytes test", async () => {
   assertNotEquals(skaAES_CTR1bytes, skaAES_CTR3bytes);
   assertNotEquals(skaAES_CTR1bytes, skaAES_CTR4bytes);
 });
+
+Deno.test("SettingsAES_CTR get as bytes test", async () => {
+  // Arrange
+  const initialCounter1: Uint8Array = new Uint8Array([0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff]);
+  const initialCounter2: Uint8Array = new Uint8Array([0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff]);
+  
+  const settingsAES_CTR1: SettingsAES_CTR = new SettingsAES_CTR(initialCounter1);
+  const settingsAES_CTR2: SettingsAES_CTR = new SettingsAES_CTR(initialCounter2);
+
+  // Act
+  const bytes1: Uint8Array = settingsAES_CTR1.GetSettingsAsBytes();
+  const bytes2: Uint8Array = settingsAES_CTR2.GetSettingsAsBytes();
+
+  // Assert
+  assertExists(bytes1);
+  assertExists(bytes2);
+
+  assertEquals<Uint8Array>(bytes1, bytes2);
+});
