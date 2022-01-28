@@ -93,3 +93,26 @@ Deno.test("SettingsAES_CTR get as bytes test", async () => {
 
   assertEquals<Uint8Array>(bytes1, bytes2);
 });
+
+Deno.test("Create SettingsAES_CTR With Cryptographic Random Numbers test", async () => {
+  // Arrange
+  const settingsAES_CTR_1: SettingsAES_CTR = SettingsAES_CTR.CreateWithCryptographicRandomNumbers();
+  const settingsAES_CTR_2: SettingsAES_CTR = SettingsAES_CTR.CreateWithCryptographicRandomNumbers();
+  const settingsAES_CTR_3: SettingsAES_CTR = SettingsAES_CTR.CreateWithCryptographicRandomNumbers();
+  const settingsAES_CTR_4: SettingsAES_CTR = SettingsAES_CTR.CreateWithCryptographicRandomNumbers();
+
+  // Act
+
+  // Assert
+  assertExists(settingsAES_CTR_1);
+  assertExists(settingsAES_CTR_2);
+  assertExists(settingsAES_CTR_3);
+  assertExists(settingsAES_CTR_4);
+
+  assertNotEquals(settingsAES_CTR_1.initialCounter, settingsAES_CTR_2.initialCounter);
+  assertNotEquals(settingsAES_CTR_1.initialCounter, settingsAES_CTR_3.initialCounter);
+  assertNotEquals(settingsAES_CTR_1.initialCounter, settingsAES_CTR_4.initialCounter);
+  assertNotEquals(settingsAES_CTR_2.initialCounter, settingsAES_CTR_3.initialCounter);
+  assertNotEquals(settingsAES_CTR_2.initialCounter, settingsAES_CTR_4.initialCounter);
+  assertNotEquals(settingsAES_CTR_3.initialCounter, settingsAES_CTR_4.initialCounter);
+});
