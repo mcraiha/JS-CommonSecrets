@@ -20,8 +20,8 @@ Deno.test("AES_CTR test", async () => {
   const output2 = await skaAES_CTR.DecryptBytes(content, key);
 
   // Assert
-  assertEquals(output1, expected);
-  assertEquals(output2, expected);
+  assertEquals<Uint8Array>(output1, expected);
+  assertEquals<Uint8Array>(output2, expected);
 });
 
 Deno.test("Generate new test", async () => {
@@ -42,7 +42,7 @@ Deno.test("Generate new test", async () => {
   assertExists(skaAES.settingsAES_CTR);
   assertEquals(skaAES.settingsChaCha20, null);
   assertNotEquals(content, outputAES);
-  assertEquals(content, decryptedAES);
+  assertEquals<Uint8Array>(content, decryptedAES);
 });
 
 Deno.test("Generate new test", async () => {
