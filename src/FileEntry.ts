@@ -78,7 +78,7 @@ export class FileEntry
 
   private async CalculateHexChecksum(): Promise<string>
   {
-    return await ChecksumHelper.CalculateHexChecksum(new Array(this.filename, this.fileContent, BitConverter.GetBytes(this.creationTime), BitConverter.GetBytes(this.modificationTime)));
+    return await ChecksumHelper.CalculateHexChecksum(new Array(this.filename, this.fileContent, BitConverter.Get8Bytes(this.creationTime), BitConverter.Get8Bytes(this.modificationTime)));
   }
 
   private async CalculateAndUpdateChecksum(): Promise<void>

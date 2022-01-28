@@ -155,7 +155,7 @@ export class KeyDerivationFunctionEntry
 
   private async CalculateHexChecksum(): Promise<string>
   {
-    return await ChecksumHelper.CalculateHexChecksum(new Array(new TextEncoder().encode(this.algorithm), new TextEncoder().encode(this.pseudorandomFunction), this.salt, BitConverter.GetBytes(this.iterations), BitConverter.GetBytes(this.derivedKeyLengthInBytes), this.keyIdentifier));
+    return await ChecksumHelper.CalculateHexChecksum(new Array(new TextEncoder().encode(this.algorithm), new TextEncoder().encode(this.pseudorandomFunction), this.salt, BitConverter.Get4BytesFromInt(this.iterations), BitConverter.Get4BytesFromInt(this.derivedKeyLengthInBytes), this.keyIdentifier));
   }
 
   private async CalculateAndUpdateChecksum(): Promise<void>
