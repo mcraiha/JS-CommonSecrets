@@ -31,7 +31,7 @@ export class SymmetricKeyAlgorithm
   {
     this.algorithm = algorithm.toString();
 
-    if (algorithm == SymmetricEncryptionAlgorithm.AES_CTR)
+    if (algorithm === SymmetricEncryptionAlgorithm.AES_CTR)
     {
       if (!SymmetricKeyAlgorithm.allowed_AES_CTR_KeyLengths.includes(keySizeInBits / 8))
       {
@@ -40,7 +40,7 @@ export class SymmetricKeyAlgorithm
 
       this.settingsAES_CTR = <SettingsAES_CTR>settings!;
     }
-    else if (algorithm == SymmetricEncryptionAlgorithm.ChaCha20)
+    else if (algorithm === SymmetricEncryptionAlgorithm.ChaCha20)
     {
       if (256 != keySizeInBits)
       {
@@ -76,14 +76,16 @@ export class SymmetricKeyAlgorithm
         false,
         ["encrypt", "decrypt"]
       );
+
       const encryptedArray = await crypto.subtle.encrypt(
         {
           name: "AES-CTR",
           counter: this.settingsAES_CTR!.initialCounter,
-          length: this.keySizeInBits
+          length: this.settingsAES_CTR!.initialCounter.length * 8
         },
         cryptoKey,
         bytesToEncrypt);
+        
       returnArray = new Uint8Array(encryptedArray);
     }
     else if (this.algorithm === SymmetricEncryptionAlgorithm.ChaCha20.toString())
@@ -107,6 +109,11 @@ export class SymmetricKeyAlgorithm
   public async DecryptBytes(bytesToDecrypt: Uint8Array, key: Uint8Array): Promise<Uint8Array>
   {
     return await this.EncryptBytes(bytesToDecrypt, key);
+  }
+
+  public static GenerateNew(symmetricEncryptionAlgorithm: SymmetricEncryptionAlgorithm): SymmetricKeyAlgorithm
+  {
+    return new SymmetricKeyAlgorithm(symmetricEncryptionAlgorithm, 256, (symmetricEncryptionAlgorithm === SymmetricEncryptionAlgorithm.AES_CTR ) ? SettingsAES_CTR.CreateWithCryptographicRandomNumbers() : SettingsChaCha20.CreateWithCryptographicRandomNumbers() );
   }
 }
 

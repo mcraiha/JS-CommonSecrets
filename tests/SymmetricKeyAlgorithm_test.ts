@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertExists, assertRejects } from "https://deno.land/std@0.122.0/testing/asserts.ts";
+import { assert, assertEquals, assertNotEquals, assertExists, assertRejects } from "https://deno.land/std@0.122.0/testing/asserts.ts";
 import { KeyDerivationFunctionEntry, KeyDerivationPrf } from "../src/KeyDerivationFunctionEntry.ts";
 import { SymmetricEncryptionAlgorithm, SymmetricKeyAlgorithm, SettingsAES_CTR, SettingsChaCha20 } from "../src/SymmetricKeyAlgorithm.ts";
 import { CalculateEntropy } from "./ComparisonHelper.ts";
@@ -22,4 +22,25 @@ Deno.test("AES_CTR test", async () => {
   // Assert
   assertEquals(output1, expected);
   assertEquals(output2, expected);
+});
+
+Deno.test("Generate new test", async () => {
+  // Arrange
+  const keyAES: Uint8Array = new Uint8Array([0x2b, 0x7e, 0x12, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0x17, 0x15, 0x88, 0x09, 0xcf, 0x43, 0x3c]);
+  
+  const content: Uint8Array = new Uint8Array([0x6b, 0xc1, 0xbe, 0xe2, 0x2e, 0x40, 0x9f, 0x96, 0xe9, 0x3d, 0x7e, 0x11, 0x73, 0x93, 0x17, 0x2a]);
+
+  const skaAES: SymmetricKeyAlgorithm = SymmetricKeyAlgorithm.GenerateNew(SymmetricEncryptionAlgorithm.AES_CTR);
+
+  // Act
+  const outputAES: Uint8Array = await skaAES.EncryptBytes(content, keyAES);
+  const decryptedAES: Uint8Array = await skaAES.DecryptBytes(outputAES, keyAES);
+
+
+  // Assert
+  assertExists(skaAES);
+  assertExists(skaAES.settingsAES_CTR);
+  assertEquals(skaAES.settingsChaCha20, null);
+  assertNotEquals(content, outputAES);
+  assertEquals(content, decryptedAES);
 });
